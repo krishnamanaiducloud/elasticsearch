@@ -5,4 +5,4 @@ resources:
   - service.yaml
 images:
   - name: docker.io/mohankrishna999/elasticsearch
-    newTag: 9.5.6-patched
+    newTag: 8.19.19-patched
