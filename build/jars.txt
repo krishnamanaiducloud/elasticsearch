@@ -1,0 +1,59 @@
+# Third-party jar fixes for Elasticsearch 9.5.6; every jar is from Maven Central and pinned by sha256.
+# guava 32.0.1-jre and 33.4.0-jre: CVE-2026-102554 (fixed in 33.7.2); guava 33.8 needs failureaccess 1.0.3
+jar     guava-32.0.1-jre.jar                com.google.guava:guava:33.8.0-jre 97b79ec3f2c0a6313a0c2df51ce1abdf8907e6531803467b81efcaaf99b35161
+jar     guava-33.4.0-jre.jar                com.google.guava:guava:33.8.0-jre 97b79ec3f2c0a6313a0c2df51ce1abdf8907e6531803467b81efcaaf99b35161
+jar     failureaccess-1.0.1.jar             com.google.guava:failureaccess:1.0.3 cbfc3906b19b8f55dd7cfd6dfe0aa4532e834250d7f080bd8d211a3e246b59cb
+jar     failureaccess-1.0.2.jar             com.google.guava:failureaccess:1.0.3 cbfc3906b19b8f55dd7cfd6dfe0aa4532e834250d7f080bd8d211a3e246b59cb
+add     modules/x-pack-inference            com.google.guava:failureaccess:1.0.3 cbfc3906b19b8f55dd7cfd6dfe0aa4532e834250d7f080bd8d211a3e246b59cb
+# Iceberg's bundled guava 33.4.8 (relocated): same CVE; re-shaded with guava 33.8.0 and failureaccess 1.0.3, keeping
+# the bundle's selection of classes
+reshade iceberg-bundled-guava-1.10.2.jar    com/google/common=org/apache/iceberg/relocated/com/google/common com/google/common/ com.google.guava:guava:33.8.0-jre 97b79ec3f2c0a6313a0c2df51ce1abdf8907e6531803467b81efcaaf99b35161 com.google.guava:failureaccess:1.0.3 cbfc3906b19b8f55dd7cfd6dfe0aa4532e834250d7f080bd8d211a3e246b59cb
+# Parquet's bundled jackson-core and jackson-databind 2.22.2 (relocated): CVE-2026-89407, CVE-2026-89425,
+# CVE-2026-91776, CVE-2026-91777 (fixed in 2.22.3); re-shaded with 2.22.4
+reshade parquet-hadoop-bundle-1.18.1.jar    com/fasterxml/jackson=shaded/parquet/com/fasterxml/jackson com/fasterxml/jackson/core/,com/fasterxml/jackson/databind/ com.fasterxml.jackson.core:jackson-core:2.22.4 2d30c375cddea9657a1e1ef97547a2694b663b355facb4de53a097782b312d1a com.fasterxml.jackson.core:jackson-databind:2.22.4 d4cbf8947087f305869826801913abdc50735a1fab2074a1993e7bc67ca974a3
+# opentelemetry API 1.62.0 (repository-gcs, esql-datasource-gcs): CVE-2026-118259 (fixed in 1.67.0)
+jar     opentelemetry-api-1.62.0.jar        io.opentelemetry:opentelemetry-api:1.67.0 538d1dff2f9a37aecbc0ef98fd17273a3affb058e734e6763a3a07a38a5fdc59
+jar     opentelemetry-context-1.62.0.jar    io.opentelemetry:opentelemetry-context:1.67.0 40fb813fb5e27ec2691daa29c81b572b5b1541ef9b41e62490c3ee3e6407c55e
+jar     opentelemetry-common-1.62.0.jar     io.opentelemetry:opentelemetry-common:1.67.0 da97bdb395418e16ecdcbe7ad3497f45b9e767ceda4ae7e86133e7a757ac377f
+# apm module: opentelemetry 1.64.0 (CVE-2026-118259). The SDK, exporters and instrumentation move together to the
+# aligned upstream releases: opentelemetry 1.67.0, instrumentation 2.33.1, semconv 1.44.0, disk-buffering 1.62.1 with
+# the wire-runtime 7, okhttp 5.5 and okio 3.18 they are built against
+jar     opentelemetry-api-1.64.0.jar                          io.opentelemetry:opentelemetry-api:1.67.0 538d1dff2f9a37aecbc0ef98fd17273a3affb058e734e6763a3a07a38a5fdc59
+jar     opentelemetry-api-incubator-1.64.0-alpha.jar          io.opentelemetry:opentelemetry-api-incubator:1.67.0-alpha fea3d78726e49620168c3f6194ff491edfd1ec89b2df06fd5d5b73e55d74a342
+jar     opentelemetry-common-1.64.0.jar                       io.opentelemetry:opentelemetry-common:1.67.0 da97bdb395418e16ecdcbe7ad3497f45b9e767ceda4ae7e86133e7a757ac377f
+jar     opentelemetry-context-1.64.0.jar                      io.opentelemetry:opentelemetry-context:1.67.0 40fb813fb5e27ec2691daa29c81b572b5b1541ef9b41e62490c3ee3e6407c55e
+jar     opentelemetry-exporter-common-1.64.0.jar              io.opentelemetry:opentelemetry-exporter-common:1.67.0 eb61aab6d20bf105102dfa061b478b659cec17e82a50969898046456768ba09b
+jar     opentelemetry-exporter-otlp-1.64.0.jar                io.opentelemetry:opentelemetry-exporter-otlp:1.67.0 6724a9c8f9f42de757682c6194c48d9fee4670cd19a85c37954eba526c58b836
+jar     opentelemetry-exporter-otlp-common-1.64.0.jar         io.opentelemetry:opentelemetry-exporter-otlp-common:1.67.0 75530ab4d93e6fdef478d3e112713337625e70a63df357e6e7b9060c13788015
+jar     opentelemetry-exporter-sender-okhttp-1.64.0.jar       io.opentelemetry:opentelemetry-exporter-sender-okhttp:1.67.0 0ccb54e5e1db24680b0b7b818299552477dcc7114de7ca0f7b054e6e20958b83
+jar     opentelemetry-sdk-1.64.0.jar                          io.opentelemetry:opentelemetry-sdk:1.67.0 52a8f599a368a3d62185e37053f6a53175d6fbe3ecc1d565baba13b1a854267f
+jar     opentelemetry-sdk-common-1.64.0.jar                   io.opentelemetry:opentelemetry-sdk-common:1.67.0 628a4c00db9561ff4c608a650d5e7fd66a1e153ccdf1ba3cdc5ac0b7c6518fea
+jar     opentelemetry-sdk-extension-autoconfigure-spi-1.64.0.jar io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.67.0 41eb19f6caf2c655ac3139d331f5c34283f2efdb0f0b0e58765a6cc9e27f66bc
+jar     opentelemetry-sdk-logs-1.64.0.jar                     io.opentelemetry:opentelemetry-sdk-logs:1.67.0 dd0f0b625e08787af49d7e270abc6def4c2eabc2f18f5f145b7924024a3311e3
+jar     opentelemetry-sdk-metrics-1.64.0.jar                  io.opentelemetry:opentelemetry-sdk-metrics:1.67.0 c157ff10da59a87a57e5236d9f3290792d9b749433be5e5b449a7d1604c320a9
+jar     opentelemetry-sdk-trace-1.64.0.jar                    io.opentelemetry:opentelemetry-sdk-trace:1.67.0 14d9615c8a5dcf471dcbb74902b771dcfa8656b755ac38dce904042289ccd198
+jar     opentelemetry-instrumentation-api-2.30.0.jar          io.opentelemetry.instrumentation:opentelemetry-instrumentation-api:2.33.1 b89065ef77f92ca8130f0d65a3356a16f6d7b5788c506892bb93bb0c36166ef2
+jar     opentelemetry-instrumentation-api-incubator-2.30.0-alpha.jar io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-incubator:2.33.1-alpha 99b96d22b70af1b9e1e94f5559f257359887574646a6074ebb5b25b36ce59cb9
+jar     opentelemetry-log4j-appender-2.17-2.30.0-alpha.jar    io.opentelemetry.instrumentation:opentelemetry-log4j-appender-2.17:2.33.1-alpha ad45be65615d1abdc5911e939ed119ea0f55dac0058e0c0184e8e45673c7f473
+jar     opentelemetry-log4j-context-data-2.17-autoconfigure-2.30.0-alpha.jar io.opentelemetry.instrumentation:opentelemetry-log4j-context-data-2.17-autoconfigure:2.33.1-alpha 31f17b5fc6f9cd3ca5fc2a3d879af82d14041b40529ce015ecba1d563a159ff8
+jar     opentelemetry-runtime-telemetry-2.30.0-alpha.jar      io.opentelemetry.instrumentation:opentelemetry-runtime-telemetry:2.33.1-alpha c0cc76505851da72cb734cb4bd797bfd85bc42db59d066054b7879723e7828ff
+jar     opentelemetry-semconv-1.43.0.jar                      io.opentelemetry.semconv:opentelemetry-semconv:1.44.0 2421833680c5a4aa618745854a0654abd9ff4a333dab43290aa8d55ce659c9e7
+jar     opentelemetry-disk-buffering-1.59.0-alpha.jar         io.opentelemetry.contrib:opentelemetry-disk-buffering:1.62.1-alpha 99e294d96a63269c2685593c93b7726ed60963adf2a9312ba603b28e5be3e85c
+jar     wire-runtime-jvm-6.4.5.jar                            com.squareup.wire:wire-runtime-jvm:7.1.2 104b97326ed7ca4747def1a5d7d1923e4d96ac35f58f9dcecf4af6c76d5ebbe2
+jar     okhttp-jvm-5.3.2.jar                                  com.squareup.okhttp3:okhttp-jvm:5.5.0 234194a04aac54858df0a750d243af7b2e39df5e4eb86e9912043ad33a9f9a52
+jar     okio-jvm-3.17.0.jar                                   com.squareup.okio:okio-jvm:3.18.2 681fed549d1d2c63710f42c9eab433d642c71af778babd67035c50f8c425aaff
+# commons-lang3 3.9 (x-pack-ent-search): CVE-2025-48924 (fixed in 3.18.0)
+jar     commons-lang3-3.9.jar               org.apache.commons:commons-lang3:3.20.0 69e5c9fa35da7a51a5fd2099dfe56a2d8d32cf233e2f6d770e796146440263f4
+# elastic-apm-agent 1.55.6 bundles log4j-api 2.25.4: CVE-2026-49844; 1.57.1 bundles 2.26.1
+jar     elastic-apm-agent-java8-1.55.6.jar  co.elastic.apm:elastic-apm-agent-java8:1.57.1 bf6c3b903568bc5e0c8dbb40318ea826aec7d5eb665bb96deff05e58b2099838
+# SQL CLI uber jar shades jline 3.21.0: CVE-2026-77420 (fixed in 3.30.15); jline-terminal-jna 3.30 needs JNA 5.19
+unshade elasticsearch-sql-cli-9.5.6.jar        org/jline/
+unshade elasticsearch-sql-cli-9.5.6.jar        META-INF/maven/org.jline/
+unshade elasticsearch-sql-cli-9.5.6.jar        META-INF/services/org.jline.
+unshade elasticsearch-sql-cli-9.5.6.jar        com/sun/jna/
+shade   elasticsearch-sql-cli-9.5.6.jar        org.jline:jline-native:3.30.17 ddfd2cc87e60ffaf9646736d77d81a7a851020d74057069e86b474a066914085
+shade   elasticsearch-sql-cli-9.5.6.jar        org.jline:jline-terminal:3.30.17 382ee369588cb014592e3bef08fbf3fbe47c8f76bdc5c5a7aeb1efb1506983f0
+shade   elasticsearch-sql-cli-9.5.6.jar        org.jline:jline-reader:3.30.17 6efae5be31bf8abca2c27ce4c406685c7726faff22416fe00932dce78f3cda8e
+shade   elasticsearch-sql-cli-9.5.6.jar        org.jline:jline-style:3.30.17 aca9a3d5a35ef1c96c193f766735ca7a1a3cd23fff29e983d139f880aaf30215
+shade   elasticsearch-sql-cli-9.5.6.jar        org.jline:jline-terminal-jna:3.30.17 1cc6458ba9cde7200f7c43e27a53b5eb7cdbe119073b4f3a096a995c201b62c0
+shade   elasticsearch-sql-cli-9.5.6.jar        net.java.dev.jna:jna:5.19.1 4fb141dd8ef6b0585ffceea4bc49602fbc6312fa977e2c488794ea3e6aafecae

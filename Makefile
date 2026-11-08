@@ -1,13 +1,17 @@
-.PHONY: build smoke scan push all
+.PHONY: build smoke scan builder push all
 IMAGENAME=mohankrishna999/elasticsearch
-VERSION=9.5.6-patched
+VERSION=9.5.6.1-patched
+PLATFORMS=linux/amd64,linux/arm64
+BUILDER=securebridge
 build:
-	IMAGE=${IMAGENAME}:${VERSION} sh build/build.sh
+	docker buildx build --load --platform linux/amd64 -t ${IMAGENAME}:${VERSION} .
 smoke: build
-	docker run --rm -e discovery.type=single-node -e xpack.security.enabled=false ${IMAGENAME}:${VERSION} --version
+	docker run --rm ${IMAGENAME}:${VERSION} elasticsearch --version
 scan: build
 	trivy image --scanners vuln --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 1 ${IMAGENAME}:${VERSION}
 	grype ${IMAGENAME}:${VERSION} --fail-on negligible
-push:
-	IMAGE=${IMAGENAME}:${VERSION} PLATFORMS=linux/amd64,linux/arm64 OUTPUT=--push sh build/build.sh
+builder:
+	docker buildx inspect ${BUILDER} >/dev/null 2>&1 || docker buildx create --name ${BUILDER} --driver docker-container >/dev/null
+push: builder
+	docker buildx build --builder ${BUILDER} --platform ${PLATFORMS} --sbom=true --provenance=mode=max -t ${IMAGENAME}:${VERSION} --push .
 all: smoke scan push

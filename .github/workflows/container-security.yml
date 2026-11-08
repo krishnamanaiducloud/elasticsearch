@@ -2,7 +2,7 @@ name: Container security
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, 'release/**']
   schedule:
     - cron: '17 6 * * 1'
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
       - name: Trivy scan
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: mohankrishna999/elasticsearch:9.5.6-patched
+          image-ref: mohankrishna999/elasticsearch:9.5.6.1-patched
           scanners: vuln
           vuln-type: os,library
           severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
@@ -28,7 +28,7 @@ jobs:
       - name: Grype scan
         uses: anchore/scan-action@v7
         with:
-          image: mohankrishna999/elasticsearch:9.5.6-patched
+          image: mohankrishna999/elasticsearch:9.5.6.1-patched
           fail-build: true
           severity-cutoff: negligible
 
