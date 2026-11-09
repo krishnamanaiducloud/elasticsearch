@@ -72,8 +72,19 @@ Verified on the built image, side by side with Elastic's `elasticsearch:9.5.6` i
 
 ## Known scanner findings
 
-Trivy reports no vulnerabilities. Elastic's `elasticsearch:9.5.6` image has 255. Grype reports two,
-neither of which has a fix yet:
+Trivy reports no vulnerabilities in `9.5.6.1-patched` with the 2026-11-08 database. The repository
+also carries an auditable OpenVEX statement at `security/vex/elasticsearch.openvex.json` for
+CVE-2026-47845. Reactor Netty 1.2.18 is present only in Elasticsearch's outbound HTTP client
+integrations; the advisory's vulnerable HAProxy Protocol HTTP Server path is not instantiated or
+exposed by this image.
+
+The public Reactor Netty 1.2.x line currently ends at 1.2.18. The advisory names 1.2.19 as the
+compatible fix, but that artifact is available only to Spring Enterprise customers. Moving this
+Elasticsearch release to Reactor Netty 1.3.x would also require aligned Reactor Core and Netty
+upgrades and is therefore not treated as a safe drop-in jar replacement.
+
+Grype may report two findings for which the runtime does not currently have an applicable fixed
+package:
 
 - CVE-2026-84243 in glibc 2.44 (matched through NVD). Neither Wolfi nor Chainguard ships a patched
   glibc yet.

@@ -8,7 +8,7 @@ build:
 smoke: build
 	docker run --rm ${IMAGENAME}:${VERSION} elasticsearch --version
 scan: build
-	trivy image --scanners vuln --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-code 1 ${IMAGENAME}:${VERSION}
+	trivy image --vex security/vex/elasticsearch.openvex.json --scanners vuln --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --exit-on-eol 1 --exit-code 1 ${IMAGENAME}:${VERSION}
 	grype ${IMAGENAME}:${VERSION} --fail-on negligible
 builder:
 	docker buildx inspect ${BUILDER} >/dev/null 2>&1 || docker buildx create --name ${BUILDER} --driver docker-container >/dev/null

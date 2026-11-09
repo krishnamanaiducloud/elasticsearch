@@ -1,0 +1,26 @@
+{
+  "@context": "https://openvex.dev/ns/v0.2.0",
+  "@id": "https://github.com/krishnamanaiducloud/elasticsearch/security/vex/elasticsearch.openvex.json",
+  "author": "elasticsearch hardened image maintainers",
+  "role": "Document Creator",
+  "timestamp": "2026-11-08T00:00:00Z",
+  "version": 1,
+  "tooling": "manual reachability and deployment-mode analysis",
+  "statements": [
+    {
+      "vulnerability": {
+        "name": "CVE-2026-47845",
+        "description": "Reactor Netty HTTP Server denial of service while parsing HAProxy Protocol headers."
+      },
+      "timestamp": "2026-11-08T00:00:00Z",
+      "products": [
+        { "@id": "pkg:maven/io.projectreactor.netty/reactor-netty-http@1.2.18" },
+        { "@id": "pkg:maven/io.projectreactor.netty/reactor-netty-core@1.2.18" }
+      ],
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_in_execute_path",
+      "impact_statement": "The vulnerable behavior requires a Reactor Netty HTTP Server configured to accept HAProxy Protocol headers. Elasticsearch packages these jars only in outbound HTTP client integrations (Azure repository, ES|QL datasource and inference modules); the image does not instantiate the affected Reactor Netty HTTP Server path or expose an HAProxy Protocol listener through Reactor Netty.",
+      "action_statement": "Retain 1.2.18 until a compatible public 1.2.x fix exists or Spring Enterprise 1.2.19 artifacts are supplied. Revalidate this statement whenever the Elasticsearch integration changes or Reactor Netty is upgraded."
+    }
+  ]
+}

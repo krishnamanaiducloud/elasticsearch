@@ -18,6 +18,9 @@ jobs:
         run: make smoke
       - name: Trivy scan
         uses: aquasecurity/trivy-action@v0.36.0
+        env:
+          TRIVY_VEX: security/vex/elasticsearch.openvex.json
+          TRIVY_EXIT_ON_EOL: '1'
         with:
           image-ref: mohankrishna999/elasticsearch:9.5.6.1-patched
           scanners: vuln
